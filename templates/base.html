@@ -12,17 +12,20 @@
     ul {list-style-type: none}
     .card-header-pills {
         align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+
     }
     .nav-link {
         color: white;
     }
+    .card {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+    }
 </style>
 <body>
-    <header class="card">
-        <h3>пасхалко</h3>
-    </header>
-    <header class="card card-header-pills fixed-top">
-        <ul class="nav nav-pills align-items-md-center">
+    <header class="card card-header-pills ">
+        <ul class="nav nav-pills">
             <li class="nav-item">
                 <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" {% if request.path == '/' %}aria-current="page"{% endif %}>
                     На главную
@@ -34,9 +37,14 @@
                         Расписание
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/logout" class="nav-link btn btn-danger" {% if request.path == '/auth' %}aria-current="page"{% endif %}>
-                        Выход
+                <li>
+                    <a href="/profile/{{ current_user.id }}" class="nav-link {% if request.path == '/profile/' ~ current_user.id|string %}active{% endif %}" {% if request.path == '/profile/' ~ current_user.id|string %}aria-current="page"{% endif %}>
+                        Профиль
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout" class="nav-link">
+                        Выйти
                     </a>
                 </li>
             {% else %}
@@ -50,10 +58,9 @@
     </header>
     {% block body %}
     {% endblock %}
-    <!-- <div class="background">
-        <img class="card-img" src="{{ url_for('static', filename='/res/img7.png') }}" alt="minecraft(main-link)">
-        <img class="card-img" src="{{ url_for('static', filename='/res/img5.png') }}" alt="minecraft(main-link)">
-    </div> -->
+    <div class="background">
+        <img class="card-img" src="{{ url_for('static', filename='/images/bg.jpeg') }}" alt="minecraft(main-link)">
+    </div>
 </body>
 </html>
 

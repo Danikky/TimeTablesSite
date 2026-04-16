@@ -17,7 +17,10 @@ login_manager.login_view = 'login'
 db_name = db.db_name
 
 db.create_db()
-db.create_text_user()
+# db.add_group("ИСИП22п", 4)
+# db.add_group("ИСИП24п", 2)
+# db.add_group("ИСИП25п", 1)
+db.create_test_user()
 
 @socketio.on('connect', namespace='/server')
 def handle_connect():
@@ -49,9 +52,7 @@ def register():
         try:
             db.reg_user(username, password, group)
             flash('Регистрация прошла успешно!')
-            user_obj = User(db.login(username)[0], username, group)
-            login_user(user_obj)
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash('Пользователь с таким именем уже существует')
     return render_template('register.html')
@@ -63,7 +64,7 @@ def login():
         password = request.form['password']
         user = db.login(username)
         if user and check_password_hash(user[2], password):
-            user_obj = User(user[0], user[1], user[2])
+            user_obj = User(user[0], user[1], db.group_name(user[2]))
             login_user(user_obj)
             return redirect(url_for('index'))
         flash('Неверное имя пользователя или пароль')

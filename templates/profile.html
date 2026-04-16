@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Профиль пользователя</h5>
+            <p class="card-text">Добро пожаловать, {{ current_user.username }}!</p>
+            <ul>
+                <li><strong>Группа:</strong> {{ current_user.group }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -19,16 +19,37 @@ def create_db():
                 (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 name TEXT UNIQUE,
                 curse INTEGER);''')
-    conn.commit()
+    try:
+        c.execute('INSERT INTO groups (name, curse) VALUES (?, ?)', ("ИСИП23п", 3))
+    except sqlite3.IntegrityError:
+        pass
+    finally:
+        conn.commit()
+        conn.close()
+
+def group_id(group_name):
+    conn = sqlite3.connect(f"{db_name}")
+    c = conn.cursor()
+    c.execute('SELECT id FROM groups WHERE name = ?', (group_name,))
+    group = c.fetchone()
     conn.close()
+    return group[0] if group else None
+
+def group_name(group_id):
+    conn = sqlite3.connect(f"{db_name}")
+    c = conn.cursor()
+    c.execute('SELECT name FROM groups WHERE id = ?', (group_id,))
+    group = c.fetchone()
+    conn.close()
+    return group[0] if group else None
 
 def reg_user(username, password, group):
     conn = sqlite3.connect(f"{db_name}")
     c = conn.cursor()
-    c.execute('INSERT INTO users (username, password, group) VALUES (?, ?, ?)', (username, password, group))
+    c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', (username, password, group_id(group)))
     conn.commit()
     conn.close()
-    
+
 def login(username):
     conn = sqlite3.connect(f"{db_name}")
     c = conn.cursor()
@@ -37,12 +58,12 @@ def login(username):
     conn.close()
     return user
 
-def create_text_user():
+def create_test_user():
     conn = sqlite3.connect(f"{db_name}")
     c = conn.cursor()
     password = generate_password_hash("123")
     try:
-        c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', ("admin", password, 'ИСИП23п'))
+        c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', ("admin", password, group_id("ИСИП23п")))
         conn.commit()
     except sqlite3.IntegrityError:
         pass
