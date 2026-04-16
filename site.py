@@ -1,15 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit
-import asyncio
-import os
-import psutil
-import subprocess
-import threading
-import time
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime as dt
-import json
 import sqlite3
 import db
 
@@ -23,6 +16,8 @@ login_manager.login_view = 'login'
 
 db_name = db.db_name
 
+db.create_db()
+db.create_text_user()
 
 @socketio.on('connect', namespace='/server')
 def handle_connect():
@@ -42,7 +37,7 @@ def load_user(user_id):
     user = c.fetchone()
     conn.close()
     if user:
-        return User(user[0], user[1])
+        return User(user[0], user[1], user[2])
     return None
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -68,7 +63,7 @@ def login():
         password = request.form['password']
         user = db.login(username)
         if user and check_password_hash(user[2], password):
-            user_obj = User(user[0], user[1], user[3])
+            user_obj = User(user[0], user[1], user[2])
             login_user(user_obj)
             return redirect(url_for('index'))
         flash('Неверное имя пользователя или пароль')
@@ -82,6 +77,7 @@ def logout():
 
 @app.route("/")
 
+@app.route("/index")
 def index():
     return render_template("index.html")
 

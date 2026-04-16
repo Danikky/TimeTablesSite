@@ -141,7 +141,7 @@ def test_save():
         print()
         
 if __name__ == "__main__":
-    test_url()
+    # test_url()
     # test_sheets()
     # test_save()
     # update_tables()

@@ -30,38 +30,8 @@
             </li>
             {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="/server" class="nav-link {% if request.path == '/server' %}active{% endif %}" {% if request.path == '/server' %}aria-current="page"{% endif %}>
-                        Панель управления
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/players" class="nav-link {% if request.path == '/server/players' %}active{% endif %}" {% if request.path == '/server/players' %}aria-current="page"{% endif %}>
-                        Игроки
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/settings" class="nav-link {% if request.path == '/server/settings' %}active{% endif %}" {% if request.path == '/server/settings' %}aria-current="page"{% endif %}>
-                        Настройки
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/files/server" class="nav-link {% if request.path == '/server/files/server' %}active{% endif %}" {% if request.path == '/server/files/server' %}aria-current="page"{% endif %}>
-                        Файлы
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/backups" class="nav-link {% if request.path == '/server/backups' %}active{% endif %}" {% if request.path == '/server/backups' %}aria-current="page"{% endif %}>
-                        Бекапы
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/sqltables" class="nav-link {% if request.path == '/server/sqltables' %}active{% endif %}" {% if request.path == '/server/sqltables' %}aria-current="page"{% endif %}>
-                        База данных
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/server/map" class="nav-link {% if request.path == '/server/map' %}active{% endif %}" {% if request.path == '/server/map' %}aria-current="page"{% endif %}>
-                        Карта
+                    <a href="/timetable" class="nav-link {% if request.path == '/timetable' %}active{% endif %}" {% if request.path == '/timetable' %}aria-current="page"{% endif %}>
+                        Расписание
                     </a>
                 </li>
                 <li class="nav-item">
@@ -70,11 +40,6 @@
                     </a>
                 </li>
             {% else %}
-                <li class="nav-item">
-                    <a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}" {% if request.path == '/about' %}aria-current="page"{% endif %}>
-                        О нас
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="/login" class="nav-link {% if request.path == '/auth' %}active{% endif %}" {% if request.path == '/auth' %}aria-current="page"{% endif %}>
                         Вход
@@ -85,10 +50,10 @@
     </header>
     {% block body %}
     {% endblock %}
-    <div class="background">
+    <!-- <div class="background">
         <img class="card-img" src="{{ url_for('static', filename='/res/img7.png') }}" alt="minecraft(main-link)">
         <img class="card-img" src="{{ url_for('static', filename='/res/img5.png') }}" alt="minecraft(main-link)">
-    </div>
+    </div> -->
 </body>
 </html>
 
