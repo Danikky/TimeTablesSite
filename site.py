@@ -5,6 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime as dt
 import sqlite3
 import db
+import parser
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -40,7 +42,7 @@ def load_user(user_id):
     user = c.fetchone()
     conn.close()
     if user:
-        return User(user[0], user[1], user[2])
+        return User(user[0], user[1], db.group_name(user[5]))
     return None
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -64,7 +66,7 @@ def login():
         password = request.form['password']
         user = db.login(username)
         if user and check_password_hash(user[2], password):
-            user_obj = User(user[0], user[1], db.group_name(user[2]))
+            user_obj = User(user[0], user[1], db.group_name(user[5]))
             login_user(user_obj)
             return redirect(url_for('index'))
         flash('Неверное имя пользователя или пароль')
@@ -87,9 +89,15 @@ def index():
 def profile_page(user_id):
     return render_template("profile.html")
 
-@app.route("/timetable")
+@app.route("/timetable/<int:month>")
 @login_required
-def timetable():
+def timetable(month):
+    week = []
+    for i in range('понедельник', 'вторник', 'среда', 'четверг', 'пятница'):
+        if i in 
+        week.append(
+            parser.read_sheet()
+        )
     return render_template("timetable.html")
 
 if __name__ == "__main__":

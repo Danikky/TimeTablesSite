@@ -6,18 +6,20 @@ import json # Обработка формата данных
 import os # Хранение данных
 
 url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTOrEM-h36wb2LmpE3nF6f5tQMKVrBxWSZceBa7Jl5BZd5VaAt3GsHBLefgq9VV8RMDDb0FQEWNQol-/pub?output=xlsx"
+# F1 - число
+# I1 - день недели
 
 def save_sheet(data: dict, filename: str):
-    with open(f"jsons/{filename}.json", 'w', encoding='utf-8') as f:
+    with open(f"days/{filename}.json", 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 def read_sheet(filename: str):
-    with open(f"jsons/{filename}.json", 'r', encoding='utf-8') as f:
+    with open(f"days/{filename}.json", 'r', encoding='utf-8') as f:
         return json.load(f)
     
 def update_tables(url=url):
     if url:
-        try:        
+        try:
             urllib.request.urlretrieve(url, "tables.xlsx")
         except:
             print("Ошибка скачивания таблицы")
@@ -47,16 +49,13 @@ def parsing(url=None, sheet=None, is_save=False):
     if sheet["A21"].value:
         move = [0, 3, 6, 9]
     for row in sheet.iter_rows():
-        
         row_id += 1
         col_id = 0
-        
         for col in row:
             col_id += 1
             if row_id == 3 or row_id == 24 + move[1] or row_id == 45 + move[2] or row_id == 66 + move[3]: # Строки с названиями групп
                 if col_id > 2:
                     if col.value:
-                        
                         if row_id == 3:
                             curse = 1
                         if row_id == 24 + move[1]:
@@ -65,7 +64,6 @@ def parsing(url=None, sheet=None, is_save=False):
                             curse = 3
                         if row_id == 66 + move[3]:
                             curse = 4
-                        
                         groups.append({
                             "id": col_id,
                             "name": str(col.value),
@@ -92,12 +90,37 @@ def parsing(url=None, sheet=None, is_save=False):
         for i in range(iterations):
             group[str(i+1)] = {
                 "para": sheet.cell(row=row + i*3 + 3 + move[group["curse"]-1], column=group["id"]).value,
-                "teacher": sheet.cell(row=row + i*3 + 4 + move[group["curse"]-1], column=group["id"]).value
+                "teacher": sheet.cell(row=row + i*3 + 4 + move[group["curse"]-1], column=group["id"]).value,
                 }
     
     # Сохранение данных
     if is_save:
-        save_sheet(data=groups, filename=sheet.title)
+        date1 = sheet['F1'].value
+        if "января" in sheet.title:
+            date2 = 0.01
+        elif "февраля" in sheet.title:
+            date2 = 0.02
+        elif "марта" in sheet.title:
+            date2 = 0.03
+        elif "апреля" in sheet.title:
+            date2 = 0.04
+        elif "мая" in sheet.title:
+            date2 = 0.05
+        elif "июня" in sheet.title:
+            date2 = 0.06
+        elif "июля" in sheet.title:
+            date2 = 0.07
+        elif "августа" in sheet.title:
+            date2 = 0.08
+        elif "сентября" in sheet.title:
+            date2 = 0.09
+        elif "октября" in sheet.title:
+            date2 = 0.10
+        elif "ноября" in sheet.title:
+            date2 = 0.11
+        elif "декабря" in sheet.title:
+            date2 = 0.12
+        save_sheet(data=groups, filename=f'{date1 + date2} {sheet["I1"].value}')  
     
     # Возвращает списко групп студентов
     return groups    
@@ -143,6 +166,6 @@ def test_save():
 if __name__ == "__main__":
     # test_url()
     # test_sheets()
-    # test_save()
+    test_save()
     # update_tables()
     pass
