@@ -8,15 +8,29 @@ import os # Хранение данных
 url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTOrEM-h36wb2LmpE3nF6f5tQMKVrBxWSZceBa7Jl5BZd5VaAt3GsHBLefgq9VV8RMDDb0FQEWNQol-/pub?output=xlsx"
 # F1 - число
 # I1 - день недели
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if not os.path.exists(os.path.join(current_dir, "days")):
+    os.makedirs(os.path.join(current_dir, "days"))
 
 def save_sheet(data: dict, filename: str):
-    with open(f"days/{filename}.json", 'w', encoding='utf-8') as f:
+    with open(f"{current_dir}/days/{filename}.json", 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 def read_sheet(filename: str):
-    with open(f"days/{filename}.json", 'r', encoding='utf-8') as f:
+    with open(f"{current_dir}/days/{filename}", 'r', encoding='utf-8') as f:
         return json.load(f)
-    
+
+def read_sheets():
+    sheets = []
+    for filename in os.listdir(f"{current_dir}/days"):
+        if filename.endswith(".json"):
+            sheets.append({
+                filename.rstrip('.json'): read_sheet(filename),
+                'date': filename.split()[0],
+                'day': filename.split()[1].rstrip('.json')
+                })
+    return sheets
+
 def update_tables(url=url):
     if url:
         try:

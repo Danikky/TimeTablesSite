@@ -20,7 +20,7 @@ def create_db():
                 name TEXT UNIQUE,
                 curse INTEGER);''')
     try:
-        c.execute('INSERT INTO groups (name, curse) VALUES (?, ?)', ("ИСИП23п", 3))
+        c.execute('INSERT INTO groups (name, curse) VALUES (?, ?)', ("ИСИП 23 п", 3))
     except sqlite3.IntegrityError:
         pass
     finally:
@@ -63,7 +63,7 @@ def create_test_user():
     c = conn.cursor()
     password = generate_password_hash("123")
     try:
-        c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', ("admin", password, group_id("ИСИП23п")))
+        c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', ("admin", password, group_id("ИСИП 23 п")))
         conn.commit()
     except sqlite3.IntegrityError:
         pass

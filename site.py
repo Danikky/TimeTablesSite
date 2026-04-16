@@ -19,9 +19,6 @@ login_manager.login_view = 'login'
 db_name = db.db_name
 
 db.create_db()
-# db.add_group("ИСИП22п", 4)
-# db.add_group("ИСИП24п", 2)
-# db.add_group("ИСИП25п", 1)
 db.create_test_user()
 
 @socketio.on('connect', namespace='/server')
@@ -89,16 +86,12 @@ def index():
 def profile_page(user_id):
     return render_template("profile.html")
 
-@app.route("/timetable/<int:month>")
+@app.route("/timetable/")
 @login_required
-def timetable(month):
-    week = []
-    for i in range('понедельник', 'вторник', 'среда', 'четверг', 'пятница'):
-        if i in 
-        week.append(
-            parser.read_sheet()
-        )
-    return render_template("timetable.html")
+def timetable():
+    days = parser.read_sheets()
+    user_group = current_user.group
+    return render_template("timetable.html", days=days, user_group=user_group)
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5245, debug=True)

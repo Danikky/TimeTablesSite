@@ -1,9 +1,71 @@
 {% extends 'base.html' %}
 
 {% block title %}Расписание{% endblock %}
-
+<style>
+    .scroll-container {
+        display: flex;
+        overflow-x: auto;
+        padding: 20px;
+    }
+    .item {
+        flex: 0 0 auto;
+        width: 300px;
+    }
+</style>
 {% block body %}
- 
-
-
+<div class="">
+    {% for day in days %}
+        <div class="card-body card m-2 item">
+            <h2 class="card card-body card-title">{{day.date}} {{day.day}}</h2>
+            <ul>
+                {% for lesson in day[day.date + ' ' + day.day] %}
+                    {% if lesson['name'] == user_group %}
+                        {% if lesson['1']['para'] %}
+                            <div class="card-body card m-2">
+                                <h3>{{ lesson['1']['para'] }}</h3>
+                                <h5>{{ lesson['1']['teacher'] }}</h5>
+                                <h5>8:30-9:50</h5>
+                            </div>
+                        {% endif %}
+                        {% if lesson['2']['para'] %}
+                            <div class="card-body card m-2">
+                                <h3>{{ lesson['2']['para'] }}</h3>
+                                <h5>{{ lesson['2']['teacher'] }}</h5>
+                                <h5>10:00-11:40</h5>
+                            </div>
+                        {% endif %}
+                        {% if lesson['3']['para'] %}
+                            <div class="card-body card m-2">
+                                <h3>{{ lesson['3']['para'] }}</h3>
+                                <h5>{{ lesson['3']['teacher'] }}</h5>
+                                <h5>12:00-13:20</h5>
+                            </div>
+                        {% endif %}
+                        {% if lesson['4']['para'] %}
+                            <div class="card-body card m-2">
+                                <h3>{{ lesson['4']['para'] }}</h3>
+                                <h5>{{ lesson['4']['teacher'] }}</h5>
+                                <h5>13:30-14:50</h5>
+                            </div>
+                        {% endif %}
+                        {% if lesson['5']['para'] %}
+                            <div class= "card-body card m-2">
+                                <h3>{{ lesson['5']['para'] }}</h3>
+                                <h5>{{ lesson['5']['teacher'] }}</h5>
+                                <h5>15:10-16:30</h5>
+                            </div>
+                        {% endif %}
+                        {% if lesson['6']['para'] %}
+                            <div class="card-body card m-2">
+                                <h3>{{ lesson['6']['para'] }}</h3>
+                                <h5>{{ lesson['6']['teacher'] }}</h5>
+                                <h5>16:20-17:50</h5>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}
