@@ -72,7 +72,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user() 
+    logout_user()
     return redirect(url_for('index'))
 
 @app.route("/")
@@ -86,7 +86,7 @@ def index():
 def profile_page(user_id):
     return render_template("profile.html")
 
-@app.route("/timetable/")
+@app.route("/timetable")
 @login_required
 def timetable():
     days = parser.read_sheets()
@@ -94,4 +94,4 @@ def timetable():
     return render_template("timetable.html", days=days, user_group=user_group)
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', port=5245, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5246, debug=True)
