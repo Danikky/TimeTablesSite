@@ -1,70 +1,250 @@
 {% extends 'base.html' %}
 
 {% block title %}Расписание{% endblock %}
+
+{% block body %}
 <style>
-    .scroll-container {
-        display: flex;
+    .timetable-scroll-wrapper {
         overflow-x: auto;
-        padding: 1rem;
+        overflow-y: visible;
+        width: 100%;
+        padding-bottom: 12px;
     }
-    .item {
-        min-width: 300px;
+
+    .timetable-scroll-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+    .timetable-scroll-wrapper::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    .timetable-scroll-wrapper::-webkit-scrollbar-thumb {
+        background: #aaa;
+        border-radius: 3px;
+    }
+
+    .timetable-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 12px;
+        width: max-content;
+        padding: 8px 4px;
+    }
+
+    .day-card {
+        flex: 0 0 260px;
+        width: 260px;
+        min-height: 120px;
     }
 </style>
-{% block body %}
-    <div class="scroll-container">
+
+<div class="timetable-scroll-wrapper">
+    <div class="timetable-row">
         {% for day in days %}
-            <div class="card-body card m-2 item flex-column align-items-start">
-                <h2 class="card card-body card-title">{{day.date}} {{day.day}}</h2>
-                <ul>
+            <div class="card day-card">
+                <div class="card-body d-flex flex-column align-items-start">
+                    <h2 class="card-title h5 mb-3">{{ day.date }} {{ day.day }}</h2>
+
                     {% for lesson in day[day.date + ' ' + day.day] %}
                         {% if lesson['name'] == user_group %}
+
+                            {# ——— Определяем поток ——— #}
                             {% if lesson['1']['para'] %}
-                                <div class="card-body card m-2">
-                                    <h3>{{ lesson['1']['para'] }}</h3>
-                                    <h5>{{ lesson['1']['teacher'] }}</h5>
-                                    <h5>8:30-9:50</h5>
+                                {% set stream = 1 %}
+                            {% elif lesson['2']['para'] %}
+                                {% set stream = 2 %}
+                            {% else %}
+                                {% set stream = 3 %}
+                            {% endif %}
+
+                            {# ——— Понедельник ли сегодня? ——— #}
+                            {% set is_monday = (day.day == 'Понедельник') %}
+
+                            {# ═══════════════════════════════════════════════════════
+                               ТАБЛИЦА ВРЕМЁН
+                               ───────────────────────────────────────────────────────
+                               Обычные дни:
+                                 Поток 1: 1п 8:30–9:50  | 2п 10:00–11:40 | 3п 12:00–13:20 | 4п 13:30–14:50
+                                 Поток 2:                | 2п 10:10–11:30 | 3п 11:50–13:25 | 4п 13:40–15:00 | 5п 15:10–16:30
+                                 Поток 3:                                  | 3п 12:00–13:20 | 4п 13:30–15:05 | 5п 15:10–16:30
+                               Понедельник:
+                                 Поток 1: 1п 8:30–9:50  | 2п 10:30–12:10 | 3п 12:20–13:40 | 4п 14:00–15:20
+                                 Поток 2:                | 2п 10:40–12:00 | 3п 12:15–13:50 | 4п 14:00–15:20 | 5п 15:30–16:50
+                                 Поток 3:                                  | 3п 12:20–13:40 | 4п 13:50–15:25 | 5п 15:30–16:50
+                               ═══════════════════════════════════════════════════════ #}
+
+                            {# — 1 пара — только 1 поток, время одинаково #}
+                            {% if lesson['1']['para'] %}
+                                {% if is_monday and stream == 1 %}
+                                    <div class="card w-100 mb-2 border-warning">
+                                        <div class="card-body p-2">
+                                            <p class="mb-1 small text-warning fw-bold">📢 Линейка 8:20–8:30</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['1']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['1']['teacher'] }}</p>
+                                        <p class="mb-0 small text">8:30–9:50</p>
+                                    </div>
                                 </div>
                             {% endif %}
+
+                            {# — 2 пара — #}
                             {% if lesson['2']['para'] %}
-                                <div class="card-body card m-2">
-                                    <h3>{{ lesson['2']['para'] }}</h3>
-                                    <h5>{{ lesson['2']['teacher'] }}</h5>
-                                    <h5>10:00-11:40</h5>
+                                {% if is_monday and stream == 2 %}
+                                    <div class="card w-100 mb-2 border-warning">
+                                        <div class="card-body p-2">
+                                            <p class="mb-1 small text-warning fw-bold">🏃 Разминка 10:00–10:30</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['2']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['2']['teacher'] }}</p>
+                                        {% if is_monday %}
+                                            {% if stream == 1 %}
+                                                <p class="mb-0 small text">10:30–12:10</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">10:40–12:00</p>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if stream == 1 %}
+                                                <p class="mb-0 small text">10:00–11:40</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">10:10–11:30</p>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             {% endif %}
+
+                            {# — 3 пара — #}
                             {% if lesson['3']['para'] %}
-                                <div class="card-body card m-2">
-                                    <h3>{{ lesson['3']['para'] }}</h3>
-                                    <h5>{{ lesson['3']['teacher'] }}</h5>
-                                    <h5>12:00-13:20</h5>
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['3']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['3']['teacher'] }}</p>
+                                        {% if is_monday %}
+                                            {% if stream == 2 %}
+                                                <p class="mb-0 small text">12:15–13:50</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">12:20–13:40</p>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if stream == 2 %}
+                                                <p class="mb-0 small text">11:50–13:25</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">12:00–13:20</p>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             {% endif %}
+
+                            {# — 4 пара — #}
                             {% if lesson['4']['para'] %}
-                                <div class="card-body card m-2">
-                                    <h3>{{ lesson['4']['para'] }}</h3>
-                                    <h5>{{ lesson['4']['teacher'] }}</h5>
-                                    <h5>13:30-14:50</h5>
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['4']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['4']['teacher'] }}</p>
+                                        {% if is_monday %}
+                                            {% if stream == 3 %}
+                                                <p class="mb-0 small text">13:50–15:25</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">14:00–15:20</p>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if stream == 1 %}
+                                                <p class="mb-0 small text">13:30–14:50</p>
+                                            {% elif stream == 2 %}
+                                                <p class="mb-0 small text">13:40–15:00</p>
+                                            {% else %}
+                                                <p class="mb-0 small text">13:30–15:05</p>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             {% endif %}
+
+                            {# — 5 пара — #}
                             {% if lesson['5']['para'] %}
-                                <div class= "card-body card m-2">
-                                    <h3>{{ lesson['5']['para'] }}</h3>
-                                    <h5>{{ lesson['5']['teacher'] }}</h5>
-                                    <h5>15:10-16:30</h5>
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['5']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['5']['teacher'] }}</p>
+                                        {% if is_monday %}
+                                            <p class="mb-0 small text">15:30–16:50</p>
+                                        {% else %}
+                                            <p class="mb-0 small text">15:10–16:30</p>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             {% endif %}
+
+                            {# — 6 пара — #}
                             {% if lesson['6']['para'] %}
-                                <div class="card-body card m-2">
-                                    <h3>{{ lesson['6']['para'] }}</h3>
-                                    <h5>{{ lesson['6']['teacher'] }}</h5>
-                                    <h5>16:20-17:50</h5>
+                                <div class="card w-100 mb-2">
+                                    <div class="card-body p-2">
+                                        <h3 class="h6 mb-1">{{ lesson['6']['para'] }}</h3>
+                                        <p class="mb-0 small text">{{ lesson['6']['teacher'] }}</p>
+                                        <p class="mb-0 small text">16:20–17:50</p>
+                                    </div>
                                 </div>
                             {% endif %}
+
                         {% endif %}
                     {% endfor %}
-                </ul>
+                </div>
             </div>
         {% endfor %}
     </div>
+</div>
+<script>
+    document.querySelector('.timetable-scroll-wrapper').addEventListener('wheel', function(e) {
+        e.preventDefault();
+        this.scrollLeft += e.deltaY;
+    }, { passive: false });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date();
+        const days = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+        const todayName = days[today.getDay()];
+        const todayDate = today.getDate() + '.' + String(today.getMonth() + 1).padStart(2, '0');
+
+        // Подсветка
+        const cards = document.querySelectorAll('.day-card');
+        let todayCard = null;
+        cards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.trim();
+            if (title.startsWith(todayDate)) {
+                card.classList.add('border-primary', 'border-2');
+                card.querySelector('.card-title').classList.add('text-primary');
+                todayCard = card;
+            }
+        });
+
+        // Прокрутка к сегодня
+        if (todayCard) {
+            const wrapper = document.querySelector('.timetable-scroll-wrapper');
+            const cardLeft = todayCard.offsetLeft;
+            const wrapperWidth = wrapper.offsetWidth;
+            const cardWidth = todayCard.offsetWidth;
+            wrapper.scrollTo({
+                left: cardLeft - (wrapperWidth / 2) + (cardWidth / 2),
+                behavior: 'smooth'
+            });
+        }
+
+        // Колёсико мыши
+        document.querySelector('.timetable-scroll-wrapper').addEventListener('wheel', function(e) {
+            e.preventDefault();
+            this.scrollLeft += e.deltaY;
+        }, { passive: false });
+    });
+</script>
 {% endblock %}
