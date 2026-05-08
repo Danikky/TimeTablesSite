@@ -20,10 +20,17 @@
                         </div>
                         <div class="mb-3">
                             <label for="group" class="form-label">Группа</label>
-                            <input type="text" class="form-control" id="group" name="group" required>
+                            <select class="form-select" id="group" name="group" required>
+                                <option value="" disabled selected>— Выберите группу —</option>
+                                {% for group in groups %}
+                                    <option value="{{ group }}">{{ group }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-                        <a href="{{ url_for('login') }}" class="btn btn-link">Уже есть аккаунт?</a>
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                            <a href="{{ url_for('login') }}" class="btn btn-link">Уже есть аккаунт?</a>
+                        </div>
                     </form>
                 </div>
             </div>

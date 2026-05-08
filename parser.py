@@ -22,16 +22,22 @@ def read_sheet(filename: str):
 
 def read_sheets():
     sheets = []
-    files = sorted(
-        [f for f in os.listdir(f"{current_dir}/days") if f.endswith(".json")],
-        key=lambda f: float(f.split()[0])  # сортировка по числу "7.05", "8.05" и т.д.
-    )
-    for filename in files:
-        sheets.append({
-            filename.rstrip('.json'): read_sheet(filename),
-            'date': filename.split()[0],
-            'day': filename.split()[1].rstrip('.json')
-        })
+    for filename in os.listdir(f"{current_dir}/days"):
+        if filename.endswith(".json"):
+            sheets.append({
+                filename.rstrip('.json'): read_sheet(filename),
+                'date': filename.split()[0],
+                'day': filename.split()[1].rstrip('.json')
+            })
+    
+    def sort_key(sheet):
+        date_str = sheet['date']  # например "7.05" или "10.05"
+        parts = date_str.split('.')
+        day = int(parts[0])
+        month = int(parts[1]) if len(parts) > 1 else 0
+        return (month, day)
+    
+    sheets.sort(key=sort_key)
     return sheets
 
 def update_tables(url=url):

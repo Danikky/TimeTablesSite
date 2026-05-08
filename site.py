@@ -21,6 +21,15 @@ db_name = db.db_name
 db.create_db()
 db.create_test_user()
 
+# Синхронизируем все группы из таблицы в БД при старте
+try:
+    import openpyxl as xl
+    _wb = xl.load_workbook('tables.xlsx', read_only=True)
+    _groups = parser.parsing(sheet=_wb.active)
+    db.sync_groups(_groups)
+except Exception as e:
+    print('Не удалось синхронизировать группы:', e)
+
 @socketio.on('connect', namespace='/server')
 def handle_connect():
     print("Клиент подключился к WebSocket")
@@ -54,7 +63,8 @@ def register():
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash('Пользователь с таким именем уже существует')
-    return render_template('register.html')
+    groups = db.get_all_groups()
+    return render_template('register.html', groups=groups)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

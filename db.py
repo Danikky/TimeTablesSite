@@ -103,3 +103,23 @@ def change_user(username, password, group):
     c.execute('UPDATE users SET password = ?, group = ? WHERE username = ?', (password, group, username))
     conn.commit()
     conn.close()
+def get_all_groups():
+    """Возвращает список всех групп, отсортированных по названию."""
+    conn = sqlite3.connect(f"{db_name}")
+    c = conn.cursor()
+    c.execute('SELECT name FROM groups ORDER BY name')
+    groups = [row[0] for row in c.fetchall()]
+    conn.close()
+    return groups
+
+def sync_groups(groups: list):
+    """Синхронизирует список групп из парсера в БД. groups — список dict с ключами name и curse."""
+    conn = sqlite3.connect(f"{db_name}")
+    c = conn.cursor()
+    for g in groups:
+        try:
+            c.execute('INSERT INTO groups (name, curse) VALUES (?, ?)', (g['name'], g['curse']))
+        except sqlite3.IntegrityError:
+            pass
+    conn.commit()
+    conn.close()

@@ -1,30 +1,178 @@
-.background {
-    opacity: 1;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
+/* ── Анимированный градиентный фон ── */
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-.text {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: monospace;
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg,
+        #0f0c29,
+        #1a1a4e,
+        #16213e,
+        #0d1b4b,
+        #1a0533,
+        #0f0c29
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 18s ease infinite;
+    color: white;
 }
+
+/* ── Убираем старый фон-картинку ── */
+.background { display: none; }
+
+/* ── Шапка ── */
 header {
     padding: 10px;
     z-index: 200;
     position: sticky;
     top: 0;
-    background-color: rgb(65, 65, 65);
-    box-shadow: 0 5px 50px rgba(0, 0, 0, 0.9);
-    -webkit-box-shadow: 0 5px 50px rgba(0, 0, 0, 0.9);
+    background: rgba(10, 10, 30, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-card-body {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
+/* ── Карточки ── */
+.card {
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: white !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
+
+.card:hover {
+    box-shadow: 0 8px 32px rgba(80, 80, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 14px 14px 0 0 !important;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* ── Сегодняшний день — синяя подсветка ── */
+.border-primary {
+    border-color: rgba(99, 149, 255, 0.7) !important;
+    box-shadow: 0 0 0 1px rgba(99, 149, 255, 0.4), 0 8px 32px rgba(99, 149, 255, 0.2) !important;
+}
+
+/* ── Формы ── */
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(99, 149, 255, 0.7) !important;
+    box-shadow: 0 0 0 3px rgba(99, 149, 255, 0.2) !important;
+    color: white !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Цвет текста в выпадающем списке */
+.form-select option {
+    background: #1a1a4e;
+    color: white;
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ── Кнопки ── */
+.btn-primary {
+    background: linear-gradient(135deg, #4f6ef7, #7b5ea7);
+    border: none;
+    border-radius: 8px !important;
+    padding: 8px 22px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #4f6ef7, #7b5ea7);
+}
+
+.btn-link {
+    color: rgba(160, 180, 255, 0.9) !important;
+}
+
+.btn-link:hover {
+    color: white !important;
+}
+
+/* ── Навигация ── */
+.nav-link {
+    color: rgba(255, 255, 255, 0.75) !important;
+    border-radius: 8px !important;
+    transition: background 0.15s, color 0.15s;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link.active {
+    background: rgba(99, 149, 255, 0.3) !important;
+    color: white !important;
+}
+
+/* ── Алерты ── */
+.alert-danger {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border: 1px solid rgba(220, 53, 69, 0.4) !important;
+    color: #ff8a8a !important;
+    border-radius: 8px !important;
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.15) !important;
+    border: 1px solid rgba(255, 193, 7, 0.35) !important;
+    color: #ffd966 !important;
+    border-radius: 8px !important;
+}
+
+/* ── Скроллбар расписания ── */
+.timetable-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+.timetable-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+}
+.timetable-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(99, 149, 255, 0.5);
+    border-radius: 3px;
+}
+
+/* ── Текст ── */
+.text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+ul { list-style-type: none; }
