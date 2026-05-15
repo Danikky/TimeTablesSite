@@ -39,6 +39,20 @@
     }
 </style>
 
+<div class="d-flex align-items-center gap-3 px-2 py-3">
+    <label for="groupSelect" class="mb-0 text-white fw-semibold text-nowrap">Группа:</label>
+    <select id="groupSelect" class="form-select" style="max-width: 220px;">
+        {% for group in groups %}
+            <option value="{{ group }}" {% if group == user_group %}selected{% endif %}>
+                {{ group }}{% if group == current_user_group %} (моя){% endif %}
+            </option>
+        {% endfor %}
+    </select>
+    {% if user_group != current_user_group %}
+        <a href="/timetable" class="btn btn-sm btn-outline-light text-nowrap">← Моя группа</a>
+    {% endif %}
+</div>
+
 <div class="timetable-scroll-wrapper">
     <div class="timetable-row">
         {% for day in days %}
@@ -204,10 +218,9 @@
     </div>
 </div>
 <script>
-    document.querySelector('.timetable-scroll-wrapper').addEventListener('wheel', function(e) {
-        e.preventDefault();
-        this.scrollLeft += e.deltaY;
-    }, { passive: false });
+    document.getElementById('groupSelect').addEventListener('change', function() {
+        window.location.href = '/timetable?group=' + encodeURIComponent(this.value);
+    });
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

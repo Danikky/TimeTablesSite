@@ -100,8 +100,11 @@ def profile_page(user_id):
 @login_required
 def timetable():
     days = parser.read_sheets()
-    user_group = current_user.group
-    return render_template("timetable.html", days=days, user_group=user_group)
+    # Группа из параметра URL, по умолчанию — группа залогиненного студента
+    selected_group = request.args.get("group", current_user.group)
+    groups = db.get_all_groups()
+    return render_template("timetable.html", days=days, user_group=selected_group,
+                           groups=groups, current_user_group=current_user.group)
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5246, debug=True)
