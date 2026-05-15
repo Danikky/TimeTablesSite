@@ -13,6 +13,7 @@ def create_db():
                  email TEXT,
                  phone TEXT,
                  group_id INTEGER,
+                 role TEXT DEFAULT "user",
                  FOREIGN KEY(group_id) REFERENCES groups(id));''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS groups
@@ -46,7 +47,7 @@ def group_name(group_id):
 def reg_user(username, password, group):
     conn = sqlite3.connect(f"{db_name}")
     c = conn.cursor()
-    c.execute('INSERT INTO users (username, password, group_id) VALUES (?, ?, ?)', (username, password, group_id(group)))
+    c.execute('INSERT INTO users (username, password, group_id, role) VALUES (?, ?, ?, ?)', (username, password, group_id(group), "user"))
     conn.commit()
     conn.close()
 
@@ -123,3 +124,11 @@ def sync_groups(groups: list):
             pass
     conn.commit()
     conn.close()
+
+def get_all_groups_with_curse():
+    conn = sqlite3.connect(f"{db_name}")
+    c = conn.cursor()
+    c.execute('SELECT name, curse FROM groups ORDER BY curse, name')
+    groups = [{'name': row[0], 'curse': row[1]} for row in c.fetchall()]
+    conn.close()
+    return groups

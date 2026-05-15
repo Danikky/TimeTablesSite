@@ -49,7 +49,7 @@ def update_tables(url=url):
     
 # ДАЖЕ КОММЕНТЫ ДОБАВИЛ, АРТЕМ НЕ ТУПИ
 def parsing(url=None, sheet=None, is_save=False): 
-    """Функция для извлечения данных из таблицы с расписанием уолледжа подмосковье\n
+    """Функция для извлечения данных из таблицы с расписанием колледжа подмосковье\n
     Keyword arguments:\n
     ulr: Имеет приоритет над sheet, скачивает таблицу и берёт активный sheet.\n
     sheet: Обрабатывает конкретный sheet. Заранее инициализировать в переменную и передать в функцию.\n
@@ -119,29 +119,29 @@ def parsing(url=None, sheet=None, is_save=False):
     # Сохранение данных
     if is_save:
         date1 = sheet['F1'].value
-        if "января" in sheet.title:
+        if sheet.title.lower() in "января":
             date2 = 0.01
-        elif "февраля" in sheet.title:
+        elif sheet.title.lower() in "февраля":
             date2 = 0.02
-        elif "марта" in sheet.title:
+        elif sheet.title.lower() in "марта":
             date2 = 0.03
-        elif "апреля" in sheet.title:
+        elif sheet.title.lower() in "апреля":
             date2 = 0.04
-        elif "мая" in sheet.title:
+        elif sheet.title.lower() in "мая":
             date2 = 0.05
-        elif "июня" in sheet.title:
+        elif sheet.title.lower() in "июня":
             date2 = 0.06
-        elif "июля" in sheet.title:
+        elif sheet.title.lower() in "июля":
             date2 = 0.07
-        elif "августа" in sheet.title:
+        elif sheet.title.lower() in "августа":
             date2 = 0.08
-        elif "сентября" in sheet.title:
+        elif sheet.title.lower() in "сентября":
             date2 = 0.09
-        elif "октября" in sheet.title:
+        elif sheet.title.lower() in "октября":
             date2 = 0.10
-        elif "ноября" in sheet.title:
+        elif sheet.title.lower() in "ноября":
             date2 = 0.11
-        elif "декабря" in sheet.title:
+        elif sheet.title.lower() in "декабря":
             date2 = 0.12
         save_sheet(data=groups, filename=f'{date1 + date2} {sheet["I1"].value}')  
     
@@ -151,14 +151,14 @@ def parsing(url=None, sheet=None, is_save=False):
 def test_url():
     for i in parsing(url=url):
         print(f"""
-| Группа: {i["name"]} | Курс: {i["curse"]} |
-|1| {i['1']}
-|2| {i['2']}
-|3| {i['3']}
-|4| {i['4']}
-|5| {i['5']}
-|6| {i['6']}
-""")
+        | Группа: {i["name"]} | Курс: {i["curse"]} |
+        |1| {i['1']}
+        |2| {i['2']}
+        |3| {i['3']}
+        |4| {i['4']}
+        |5| {i['5']}
+        |6| {i['6']}
+        """)
     print("Время обработки таблицы: ", timeit.timeit(lambda: parsing(url), number=1))
 
 def test_sheets():
@@ -168,13 +168,13 @@ def test_sheets():
         print(f"// ТАБЛИЦА {sheet} //")
         for i in parsing(sheet=wb[sheet]):
             print(f"""
-| Группа: {i["name"]} | Курс: {i["curse"]} |
-|1| {i['1']}
-|2| {i['2']}
-|3| {i['3']}
-|4| {i['4']}
-|5| {i['5']}
-|6| {i['6']}
+            | Группа: {i["name"]} | Курс: {i["curse"]} |
+            |1| {i['1']}
+            |2| {i['2']}
+            |3| {i['3']}
+            |4| {i['4']}
+            |5| {i['5']}
+            |6| {i['6']}
         """)
 
 def test_save():
@@ -188,7 +188,7 @@ def test_save():
         
 if __name__ == "__main__":
     # test_url()
-    # test_sheets()
+    test_sheets()
     test_save()
-    # update_tables()
-    pass
+    update_tables()
+    # pass

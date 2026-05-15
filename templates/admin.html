@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Панель администратора{% endblock %}
+{% block body %}
+<div class="container py-4">
+    {% for curse_num in [1, 2, 3, 4] %}
+        {% set course_groups = groups | selectattr('curse', 'equalto', curse_num) | list %}
+        {% if course_groups %}
+            <h2 class="h5 mb-3">{{ curse_num }} курс</h2>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                {% for group in course_groups %}
+                    {% if group.hours < 32 %}
+                        {% set color = 'border-success' %}
+                    {% elif group.hours > 36 %}
+                        {% set color = 'border-danger' %}
+                    {% else %}
+                        {% set color = 'border-warning' %}
+                    {% endif %}
+                    <div class="card {{ color }} border-2" style="width: 140px; height: 140px;">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center text-center p-2">
+                            <span class="fw-bold">{{ group.name }}</span>
+                            {% if group.hours > 0 %}
+                                <span class="small mt-1">{{ group.hours }} ч.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

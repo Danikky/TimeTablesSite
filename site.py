@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash, jso
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_socketio import SocketIO, emit
 from werkzeug.security import generate_password_hash, check_password_hash
+from useful_funcs import get_week_hours
 import datetime as dt
 import sqlite3
 import db
@@ -35,10 +36,11 @@ def handle_connect():
     print("Клиент подключился к WebSocket")
     
 class User(UserMixin):
-    def __init__(self, user_id, username, group):
+    def __init__(self, user_id, username, group, role):
         self.id = user_id
         self.username = username
         self.group = group
+        self.role = role
         
 @login_manager.user_loader
 def load_user(user_id):
@@ -48,7 +50,7 @@ def load_user(user_id):
     user = c.fetchone()
     conn.close()
     if user:
-        return User(user[0], user[1], db.group_name(user[5]))
+        return User(user[0], user[1], db.group_name(user[5]), user[6])
     return None
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -73,7 +75,7 @@ def login():
         password = request.form['password']
         user = db.login(username)
         if user and check_password_hash(user[2], password):
-            user_obj = User(user[0], user[1], db.group_name(user[5]))
+            user_obj = User(user[0], user[1], db.group_name(user[5]),user[6])
             login_user(user_obj)
             return redirect(url_for('index'))
         flash('Неверное имя пользователя или пароль')
@@ -95,6 +97,22 @@ def index():
 @login_required
 def profile_page(user_id):
     return render_template("profile.html")
+
+
+#Пофксить разговоры ебаные
+@app.route("/admin")
+@login_required
+def admin_page():
+    if current_user.role != "admin":
+        return redirect(url_for('index'))
+    
+    groups_with_curse = db.get_all_groups_with_curse()
+    hours = get_week_hours()
+
+    for group in groups_with_curse:
+        group['hours'] = hours.get(group['name'], 0)
+    return render_template("admin.html", groups=groups_with_curse)
+
 
 @app.route("/timetable")
 @login_required
